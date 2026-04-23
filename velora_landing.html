@@ -1,0 +1,565 @@
+<!--
+VELORA - Proprietary Software
+Copyright © 2026 VELORA. All rights reserved.
+
+NOTICE: This code is proprietary and confidential. Unauthorized use, reproduction, distribution, 
+or modification is strictly prohibited. See LICENSE file for full terms and conditions.
+
+For licensing inquiries, contact the copyright holder directly.
+-->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VELORA — Stay Ready</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --black:#0B0B0B;--white:#FFFFFF;--beige:#E8E3DC;--gold:#C6A96B;
+  --glass:rgba(255,255,255,0.04);--glass-border:rgba(198,169,107,0.15);
+}
+html{scroll-behavior:smooth}
+body{background:var(--black);color:var(--white);font-family:'Inter',sans-serif;overflow-x:hidden}
+
+/* PARTICLES */
+#particles{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:0}
+canvas{display:block}
+
+/* NAV */
+nav{position:fixed;top:0;width:100%;z-index:100;padding:20px 40px;display:flex;justify-content:space-between;align-items:center;background:rgba(11,11,11,0.7);backdrop-filter:blur(20px);border-bottom:1px solid var(--glass-border)}
+.logo{font-family:'Playfair Display',serif;font-size:1.4rem;letter-spacing:0.3em;color:var(--gold)}
+.nav-cta{background:var(--gold);color:var(--black);border:none;padding:10px 24px;font-family:'Inter',sans-serif;font-size:0.8rem;font-weight:600;letter-spacing:0.15em;cursor:pointer;transition:all 0.3s;text-decoration:none;text-transform:uppercase;white-space:nowrap;border-radius:4px}
+.nav-cta:hover{background:var(--white);transform:translateY(-1px)}
+.nav-cta:focus{outline:2px solid rgba(255,255,255,0.5);outline-offset:2px}
+
+/* STICKY CTA */
+.sticky-cta{position:fixed;bottom:28px;right:28px;z-index:200;display:flex;flex-direction:column;gap:10px;align-items:flex-end}
+.sticky-btn{display:flex;align-items:center;gap:10px;padding:13px 22px;font-size:0.78rem;font-weight:600;letter-spacing:0.12em;cursor:pointer;transition:all 0.3s;text-decoration:none;text-transform:uppercase;border:none;border-radius:4px;min-height:44px}
+.sticky-main{background:var(--gold);color:var(--black)}
+.sticky-main:hover{background:var(--white);transform:translateY(-2px);box-shadow:0 8px 30px rgba(198,169,107,0.4)}
+.sticky-wa{background:rgba(37,211,102,0.15);color:#25D366;border:1px solid rgba(37,211,102,0.3);backdrop-filter:blur(10px)}
+.sticky-wa:hover{background:rgba(37,211,102,0.25);transform:translateY(-2px)}
+.wa-icon{width:16px;height:16px;fill:#25D366}
+
+/* SECTIONS */
+section{position:relative;z-index:1;padding:120px 40px}
+.container{max-width:1100px;margin:0 auto}
+
+/* HERO */
+#hero{min-height:100vh;display:flex;align-items:center;padding-top:80px;overflow:hidden}
+.hero-inner{position:relative;z-index:2}
+.hero-tag{display:inline-block;font-size:0.7rem;letter-spacing:0.3em;color:var(--gold);text-transform:uppercase;margin-bottom:32px;opacity:0;animation:fadeUp 1s 0.3s forwards}
+.hero-h1{font-family:'Playfair Display',serif;font-size:clamp(3rem,7vw,6rem);line-height:1.05;font-weight:400;letter-spacing:-0.01em;margin-bottom:32px;opacity:0;animation:fadeUp 1s 0.5s forwards}
+.hero-h1 em{font-style:italic;color:var(--gold)}
+.hero-sub{font-size:1.05rem;line-height:1.8;color:rgba(255,255,255,0.6);max-width:520px;margin-bottom:48px;font-weight:300;opacity:0;animation:fadeUp 1s 0.7s forwards;word-wrap:break-word;overflow-wrap:break-word}
+.hero-btns{display:flex;gap:16px;flex-wrap:wrap;opacity:0;animation:fadeUp 1s 0.9s forwards}
+.btn-primary{background:var(--gold);color:var(--black);border:none;padding:16px 36px;font-family:'Inter',sans-serif;font-size:0.82rem;font-weight:600;letter-spacing:0.15em;cursor:pointer;transition:all 0.3s;text-decoration:none;text-transform:uppercase;border-radius:4px}
+.btn-primary:hover{background:var(--white);transform:translateY(-2px);box-shadow:0 12px 40px rgba(198,169,107,0.3)}
+.btn-primary:focus{outline:2px solid var(--gold);outline-offset:2px}
+.btn-primary:active{transform:translateY(0)}
+.btn-outline{background:transparent;color:var(--white);border:1px solid rgba(255,255,255,0.2);padding:16px 36px;font-family:'Inter',sans-serif;font-size:0.82rem;font-weight:400;letter-spacing:0.15em;cursor:pointer;transition:all 0.3s;text-decoration:none;text-transform:uppercase;backdrop-filter:blur(10px);border-radius:4px}
+.btn-outline:hover{border-color:var(--gold);color:var(--gold);transform:translateY(-2px)}
+.btn-outline:focus{outline:2px solid var(--gold);outline-offset:2px}
+.btn-outline:active{transform:translateY(0)}
+.hero-scroll{position:absolute;bottom:40px;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:8px;opacity:0;animation:fadeUp 1s 1.3s forwards}
+.scroll-line{width:1px;height:60px;background:linear-gradient(to bottom,transparent,var(--gold));animation:scrollPulse 2s infinite}
+.scroll-text{font-size:0.65rem;letter-spacing:0.25em;color:rgba(255,255,255,0.3);text-transform:uppercase}
+
+/* GLASS SECTION */
+.glass-panel{background:var(--glass);border:1px solid var(--glass-border);backdrop-filter:blur(20px);padding:64px;position:relative;overflow:hidden}
+.glass-panel::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--gold),transparent)}
+
+/* SECTION HEADERS */
+.sec-label{font-size:0.65rem;letter-spacing:0.35em;color:var(--gold);text-transform:uppercase;margin-bottom:20px;display:block}
+.sec-h2{font-family:'Playfair Display',serif;font-size:clamp(2rem,4vw,3.2rem);font-weight:400;line-height:1.1;margin-bottom:24px}
+.sec-h2 em{font-style:italic;color:var(--gold)}
+.sec-body{font-size:0.95rem;line-height:1.9;color:rgba(255,255,255,0.6);font-weight:300;word-wrap:break-word;overflow-wrap:break-word;hyphens:auto}
+
+/* PROBLEM */
+#problem{background:#0d0d0d}
+.problem-grid{display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:center}
+.touch-items{display:flex;flex-direction:column;gap:16px;margin-top:32px}
+.touch-item{display:flex;align-items:center;gap:16px;padding:16px 20px;border:1px solid var(--glass-border);background:var(--glass);backdrop-filter:blur(10px);transition:all 0.3s}
+.touch-item:hover{border-color:var(--gold);transform:translateX(4px)}
+.touch-dot{width:6px;height:6px;background:var(--gold);border-radius:50%;flex-shrink:0}
+.touch-label{font-size:0.88rem;color:rgba(255,255,255,0.7);letter-spacing:0.05em}
+
+/* SCIENCE */
+#science{background:linear-gradient(135deg,#0B0B0B 0%,#111008 100%)}
+.science-inner{display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:center}
+.science-visual{position:relative;height:320px;display:flex;align-items:center;justify-content:center}
+.molecule{width:180px;height:180px;border-radius:50%;border:1px solid rgba(198,169,107,0.2);display:flex;align-items:center;justify-content:center;position:relative;animation:moleculePulse 4s infinite}
+.molecule::before{content:'';position:absolute;width:220px;height:220px;border-radius:50%;border:1px solid rgba(198,169,107,0.08);animation:moleculePulse 4s 1s infinite}
+.molecule::after{content:'';position:absolute;width:260px;height:260px;border-radius:50%;border:1px solid rgba(198,169,107,0.04);animation:moleculePulse 4s 2s infinite}
+.molecule-core{width:80px;height:80px;border-radius:50%;background:radial-gradient(circle,rgba(198,169,107,0.3),rgba(198,169,107,0.05));border:1px solid var(--gold)}
+
+/* IDENTITY */
+#identity{background:#0d0d0d}
+.identity-list{list-style:none;display:flex;flex-direction:column;gap:0;margin-top:40px}
+.identity-item{padding:24px 0;border-bottom:1px solid var(--glass-border);display:flex;align-items:center;gap:20px;transition:all 0.3s;cursor:default}
+.identity-item:hover{padding-left:8px}
+.identity-num{font-size:0.7rem;color:var(--gold);letter-spacing:0.2em;font-weight:500;min-width:24px}
+.identity-text{font-size:1rem;color:rgba(255,255,255,0.75);font-weight:300;letter-spacing:0.02em}
+
+/* PRODUCT */
+#product{background:var(--black)}
+.product-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:32px;margin-top:48px}
+.product-card{padding:0;border:none;background:transparent;transition:all 0.4s;position:relative;overflow:visible;text-align:center}
+.product-card::after{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--gold),transparent);transform:scaleX(0);transition:transform 0.4s}
+.product-card:hover{transform:translateY(-4px)}
+.product-card:hover::after{transform:scaleX(1)}
+.card-icon{display:none}
+.product-card::before{content:'';display:block;width:64px;height:64px;background:rgba(198,169,107,0.1);border:2px solid var(--gold);border-radius:8px;margin:0 auto 24px;transition:all 0.3s}
+.product-card:hover::before{background:rgba(198,169,107,0.2)}
+.card-title{font-family:'Playfair Display',serif;font-size:1.3rem;margin-bottom:16px;color:var(--white);font-weight:400}
+.card-desc{font-size:0.9rem;color:rgba(255,255,255,0.65);line-height:1.8;font-weight:300}
+
+/* SOCIAL PROOF */
+#social{background:#0d0d0d}
+.proof-marquee{overflow:hidden;margin:48px 0;position:relative}
+.proof-track{display:flex;gap:48px;animation:marquee 20s linear infinite;width:max-content}
+.proof-item{display:flex;align-items:center;gap:16px;white-space:nowrap;padding:0 24px;border-left:1px solid var(--glass-border)}
+.proof-dot{width:4px;height:4px;background:var(--gold);border-radius:50%}
+.proof-text{font-size:0.85rem;color:rgba(255,255,255,0.5);letter-spacing:0.05em;word-break:break-word}
+.proof-location{font-size:0.8rem;color:var(--gold);font-weight:500}
+.proof-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--glass-border);border:1px solid var(--glass-border);margin-top:48px}
+.proof-cell{padding:40px 32px;background:#0d0d0d;text-align:center}
+.proof-num{font-family:'Playfair Display',serif;font-size:2.2rem;color:var(--gold);display:block;margin-bottom:8px}
+.proof-label{font-size:0.75rem;letter-spacing:0.15em;color:rgba(255,255,255,0.4);text-transform:uppercase}
+
+/* FOMO */
+#fomo{background:linear-gradient(135deg,#0B0B0B,#0e0c06)}
+.fomo-inner{text-align:center;max-width:640px;margin:0 auto}
+.fomo-badge{display:inline-block;background:rgba(198,169,107,0.1);border:1px solid rgba(198,169,107,0.3);color:var(--gold);font-size:0.7rem;letter-spacing:0.3em;padding:8px 20px;text-transform:uppercase;margin-bottom:40px}
+
+/* PRICING */
+#pricing{background:#0d0d0d}
+.pricing-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;margin-top:48px}
+.price-card{padding:40px 32px;border:1px solid var(--glass-border);background:var(--glass);backdrop-filter:blur(20px);transition:all 0.4s;position:relative}
+.price-card.featured{border-color:var(--gold);background:rgba(198,169,107,0.05)}
+.price-card.featured::before{content:'MOST POPULAR';position:absolute;top:-1px;left:50%;transform:translateX(-50%);background:var(--gold);color:var(--black);font-size:0.6rem;font-weight:700;letter-spacing:0.2em;padding:5px 16px;white-space:nowrap}
+.price-card:hover{transform:translateY(-4px);box-shadow:0 20px 50px rgba(0,0,0,0.4)}
+.price-name{font-size:0.7rem;letter-spacing:0.3em;color:rgba(255,255,255,0.4);text-transform:uppercase;margin-bottom:16px;display:block}
+.price-amount{font-family:'Playfair Display',serif;font-size:1.6rem;color:var(--white);margin-bottom:8px}
+.price-range{font-size:0.75rem;color:rgba(255,255,255,0.35);margin-bottom:28px;display:block}
+.price-desc{font-size:0.85rem;color:rgba(255,255,255,0.5);line-height:1.7;margin-bottom:32px;font-weight:300;word-wrap:break-word;overflow-wrap:break-word}
+.price-btn{display:block;text-align:center;padding:13px;font-size:0.75rem;font-weight:600;letter-spacing:0.15em;text-decoration:none;text-transform:uppercase;transition:all 0.3s}
+.price-btn-outline{border:1px solid rgba(255,255,255,0.15);color:rgba(255,255,255,0.6)}
+.price-btn-outline:hover{border-color:var(--gold);color:var(--gold)}
+.price-btn-gold{background:var(--gold);color:var(--black)}
+.price-btn-gold:hover{background:var(--white);transform:translateY(-1px)}
+.wa-order{margin-top:40px;text-align:center}
+.wa-btn{display:inline-flex;align-items:center;gap:12px;padding:14px 32px;background:rgba(37,211,102,0.1);border:1px solid rgba(37,211,102,0.25);color:#25D366;font-size:0.8rem;font-weight:600;letter-spacing:0.12em;text-decoration:none;text-transform:uppercase;transition:all 0.3s}
+.wa-btn:hover{background:rgba(37,211,102,0.2);transform:translateY(-2px)}
+
+/* FOUNDERS */
+#founders{background:var(--black)}
+.founders-grid{display:grid;grid-template-columns:1fr 1fr;gap:32px;margin-top:48px}
+.founder-card{padding:40px;border:1px solid var(--glass-border);background:var(--glass);backdrop-filter:blur(20px);transition:all 0.3s}
+.founder-card:hover{border-color:rgba(198,169,107,0.3);transform:translateY(-4px)}
+.founder-initial{width:56px;height:56px;border:1px solid var(--gold);display:flex;align-items:center;justify-content:center;font-family:'Playfair Display',serif;font-size:1.3rem;color:var(--gold);margin-bottom:24px}
+.founder-name{font-size:1rem;font-weight:500;margin-bottom:4px}
+.founder-role{font-size:0.7rem;letter-spacing:0.2em;color:var(--gold);text-transform:uppercase;margin-bottom:16px;display:block}
+.founder-bio{font-size:0.85rem;color:rgba(255,255,255,0.5);line-height:1.7;font-weight:300}
+
+/* FINAL */
+#final{background:linear-gradient(135deg,#0B0B0B,#0e0c06);text-align:center;padding:160px 40px}
+.final-h2{font-family:'Playfair Display',serif;font-size:clamp(2rem,4vw,3.5rem);line-height:1.15;margin-bottom:48px;font-weight:400}
+.final-h2 em{font-style:italic;color:var(--gold)}
+
+/* FOOTER */
+footer{padding:40px;border-top:1px solid var(--glass-border);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:16px}
+.footer-logo{font-family:'Playfair Display',serif;font-size:1rem;letter-spacing:0.3em;color:var(--gold)}
+.footer-copy{font-size:0.75rem;color:rgba(255,255,255,0.25);letter-spacing:0.05em;flex:1}
+
+/* REVEAL */
+.reveal{opacity:0;transform:translateY(40px);transition:opacity 0.8s ease,transform 0.8s ease}
+.reveal.visible{opacity:1;transform:translateY(0)}
+.reveal-delay-1{transition-delay:0.1s}
+.reveal-delay-2{transition-delay:0.2s}
+.reveal-delay-3{transition-delay:0.3s}
+
+/* ANIMATIONS */
+@keyframes fadeUp{from{opacity:0;transform:translateY(30px)}to{opacity:1;transform:translateY(0)}}
+@keyframes scrollPulse{0%,100%{opacity:0.3}50%{opacity:1}}
+@keyframes moleculePulse{0%,100%{transform:scale(1);opacity:0.6}50%{transform:scale(1.05);opacity:1}}
+@keyframes marquee{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+
+/* RESPONSIVE */
+@media(max-width:768px){
+  nav{padding:16px 20px}
+  section{padding:60px 20px}
+  .problem-grid,.science-inner,.founders-grid{grid-template-columns:1fr}
+  .product-grid{grid-template-columns:1fr;gap:24px}
+  .pricing-grid{grid-template-columns:1fr}
+  .proof-grid{grid-template-columns:1fr}
+  .glass-panel{padding:32px 20px}
+  .science-visual{height:200px}
+  .hero-btns{flex-direction:column}
+  .btn-primary,.btn-outline{width:100%;text-align:center;padding:14px 20px;min-height:48px;display:flex;align-items:center;justify-content:center}}
+  .hero-h1{font-size:clamp(2rem,5vw,3rem)}
+  .sec-h2{font-size:clamp(1.5rem,3vw,2.2rem)}
+  .card-title{font-size:1.1rem}
+  .card-desc{font-size:0.85rem}
+  footer{flex-direction:column;gap:12px;text-align:center}
+  .sticky-cta{bottom:16px;right:16px;gap:8px}
+  .sticky-btn{padding:11px 16px;font-size:0.7rem}
+  .product-card::before{width:56px;height:56px;margin-bottom:16px}
+  .price-card{padding:28px 20px}
+  .price-amount{font-size:1.4rem}
+
+
+@media(max-width:480px){
+  nav{padding:12px 16px}
+  .logo{font-size:1.2rem}
+  .nav-cta{padding:8px 16px;font-size:0.7rem}
+  section{padding:40px 16px}
+  .hero-h1{font-size:clamp(1.75rem,4vw,2.5rem);line-height:1.1}
+  .hero-sub{font-size:0.95rem;margin-bottom:32px;max-width:100%}
+  .sec-h2{font-size:clamp(1.3rem,2.5vw,1.8rem)}
+  .sec-body{font-size:0.9rem}
+  .card-desc{font-size:0.8rem;line-height:1.6}
+  .card-title{font-size:1rem}
+  .btn-primary,.btn-outline{padding:12px 20px;font-size:0.75rem;width:100%;min-height:44px;display:flex;align-items:center;justify-content:center}
+  .sticky-cta{bottom:12px;right:12px;gap:6px}
+  .sticky-btn{padding:9px 11px;font-size:0.6rem;gap:5px;min-height:40px}
+  .wa-icon{width:12px;height:12px}
+  .hero-scroll{display:none}
+  #hero{padding-top:60px;min-height:auto}
+  .price-amount{font-size:1.3rem}
+  .price-btn{padding:10px;font-size:0.65rem}
+  .price-card{padding:20px 14px}
+  .final-h2{font-size:clamp(1.3rem,3vw,1.8rem)}
+  .identity-item{padding:14px 0;gap:12px;font-size:0.9rem}
+  .identity-num{font-size:0.6rem;min-width:18px}
+  .identity-text{font-size:0.85rem}
+  .product-card::before{width:48px;height:48px;margin-bottom:12px}
+  .touch-item{padding:12px 16px;gap:12px;font-size:0.8rem}
+  .touch-label{font-size:0.8rem}
+}
+</style>
+</head>
+<body>
+
+<!-- PARTICLES CANVAS -->
+<canvas id="particles"></canvas>
+
+<!-- NAV -->
+<nav>
+  <div class="logo">VELORA</div>
+  <a href="https://beacons.ai/theangeloking" target="_blank" class="nav-cta">Get Started</a>
+</nav>
+
+<!-- STICKY CTA -->
+<div class="sticky-cta">
+  <a href="https://beacons.ai/theangeloking" target="_blank" class="sticky-btn sticky-main">Get Control</a>
+  <a href="https://wa.me/?text=I'd%20like%20to%20order%20VELORA%20wipes" target="_blank" class="sticky-btn sticky-wa">
+    <svg class="wa-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+    Quick Order
+  </a>
+</div>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="container hero-inner">
+    <span class="hero-tag">Personal Hygiene Control System</span>
+    <h1 class="hero-h1">The standard<br>for clean isn't<br><em>reactive.</em></h1>
+    <p class="hero-sub">You're exposed to more than you see throughout your day—doors, surfaces, devices. Clean shouldn't be something you react to. It's the standard you maintain. VELORA is how the Intentional Operator stays clean without stopping.</p>
+    <div class="hero-btns">
+      <a href="https://beacons.ai/theangeloking" target="_blank" class="btn-primary">Get Started</a>
+      <a href="#product" class="btn-outline">View System</a>
+    </div>
+  </div>
+  <div class="hero-scroll">
+    <span class="scroll-text">Scroll</span>
+    <div class="scroll-line"></div>
+  </div>
+</section>
+
+<!-- PROBLEM -->
+<section id="problem">
+  <div class="container">
+    <div class="problem-grid">
+      <div class="reveal">
+        <span class="sec-label">The Exposure</span>
+        <h2 class="sec-h2">Constant contact<br>you don't <em>always see.</em></h2>
+        <p class="sec-body" style="margin-top:16px">Throughout your day, you're touching surfaces in multiple environments. Most people don't realize the exposure until it's too late.<br><br>You need control—not just reaction. Clean shouldn't be a pause in your day.</p>
+      </div>
+      <div class="reveal reveal-delay-2">
+        <div class="touch-items">
+          <div class="touch-item"><div class="touch-dot"></div><span class="touch-label">Before eating on the go</span></div>
+          <div class="touch-item"><div class="touch-dot"></div><span class="touch-label">After commuting & transit</span></div>
+          <div class="touch-item"><div class="touch-dot"></div><span class="touch-label">Between meetings & environments</span></div>
+          <div class="touch-item"><div class="touch-dot"></div><span class="touch-label">Door handles & shared spaces</span></div>
+          <div class="touch-item"><div class="touch-dot"></div><span class="touch-label">Your phone & devices</span></div>
+          <div class="touch-item"><div class="touch-dot"></div><span class="touch-label">Tables, seats, & countertops</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SCIENCE -->
+<section id="science">
+  <div class="container">
+    <div class="science-inner">
+      <div class="reveal">
+        <div class="science-visual">
+          <div class="molecule"><div class="molecule-core"></div></div>
+        </div>
+      </div>
+      <div class="reveal reveal-delay-2">
+        <span class="sec-label">The Mechanism</span>
+        <h2 class="sec-h2">Perception moves to<br><em>action daily.</em></h2>
+        <p class="sec-body">VELORA uses surface-active cleansing that lifts and removes what builds through contact.<br><br><strong>But the science is simple</strong>: when you have the tool, you use it. Pocket access creates habit. Habit becomes standard. Standard becomes identity. That's the system.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- IDENTITY -->
+<section id="identity">
+  <div class="container glass-panel reveal">
+    <span class="sec-label">The Intentional Operator</span>
+    <h2 class="sec-h2">You don't just move<br>through the world.<br><em>You control it.</em></h2>
+    <p class="sec-body">This is for people who understand exposure. Who take action before reaction. Who carry confidence, not just wipes.<br>For people who:</p>
+    <ul class="identity-list">
+      <li class="identity-item"><span class="identity-num">01</span><span class="identity-text">Move through multiple environments daily (urban, professional, mobile)</span></li>
+      <li class="identity-item"><span class="identity-num">02</span><span class="identity-text">Notice the details most people miss—exposure, surfaces, hygiene</span></li>
+      <li class="identity-item"><span class="identity-num">03</span><span class="identity-text">Prefer proactive control over reactive cleaning</span></li>
+      <li class="identity-item"><span class="identity-num">04</span><span class="identity-text">Want confidence that fits seamlessly into their flow</span></li>
+    </ul>
+  </div>
+</section>
+
+<!-- PRODUCT SYSTEM -->
+<section id="product">
+  <div class="container">
+    <div class="reveal" style="text-align:center;max-width:600px;margin:0 auto 0">
+      <span class="sec-label">The System</span>
+      <h2 class="sec-h2">Control for every<br><em>environment.</em></h2>
+      <p class="sec-body">VELORA isn't just a product. It's an ecosystem designed for the way you actually live—from your pocket to your workspace to the places you visit.</p>
+    </div>
+    <div class="product-grid">
+      <div class="product-card reveal reveal-delay-1">
+        <div class="card-title">VELORA Pocket</div>
+        <p class="card-desc">Daily carry. Fits your bag, pocket, or desk. Clean access before eating, after commuting, between meetings. The Intentional Operator's standard.</p>
+      </div>
+      <div class="product-card reveal reveal-delay-2">
+        <div class="card-title">VELORA Desk Unit</div>
+        <p class="card-desc">Workplace confidence. Discreet, professional access for your office or desk. Reinforces the habit of clean throughout your workday.</p>
+      </div>
+      <div class="product-card reveal reveal-delay-3">
+        <div class="card-title">VELORA Dispenser</div>
+        <p class="card-desc">Infrastructure for shared spaces. Offices, events, restaurants, waiting areas. Brings VELORA to the environments your customers move through.</p>
+      </div>
+    </div>
+    <div class="reveal" style="text-align:center;margin-top:60px;padding-top:60px;border-top:1px solid var(--glass-border)">
+      <span class="sec-label">Tailored Formulations</span>
+      <h3 style="font-family:'Playfair Display',serif;font-size:1.8rem;margin-bottom:40px;color:var(--white)">VELORA for <em style="color:var(--gold)">Everyone</em></h3>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:20px;margin-top:32px">
+        <div style="padding:24px 16px;border:1px solid rgba(198,169,107,0.2);background:transparent;backdrop-filter:blur(10px);transition:all 0.3s;border-radius:4px;cursor:default" class="reveal"><span style="font-size:0.95rem;color:var(--white);display:block;margin-bottom:8px;font-weight:400"><strong>Men</strong></span><span style="font-size:0.75rem;color:rgba(255,255,255,0.6);line-height:1.5">Durable, active lifestyle</span></div>
+        <div style="padding:24px 16px;border:1px solid rgba(198,169,107,0.2);background:transparent;backdrop-filter:blur(10px);transition:all 0.3s;border-radius:4px;cursor:default" class="reveal"><span style="font-size:0.95rem;color:var(--white);display:block;margin-bottom:8px;font-weight:400"><strong>Women</strong></span><span style="font-size:0.75rem;color:rgba(255,255,255,0.6);line-height:1.5">Freshness & comfort</span></div>
+        <div style="padding:24px 16px;border:1px solid rgba(198,169,107,0.2);background:transparent;backdrop-filter:blur(10px);transition:all 0.3s;border-radius:4px;cursor:default" class="reveal"><span style="font-size:0.95rem;color:var(--white);display:block;margin-bottom:8px;font-weight:400"><strong>Baby</strong></span><span style="font-size:0.75rem;color:rgba(255,255,255,0.6);line-height:1.5">Gentle & protective</span></div>
+        <div style="padding:24px 16px;border:1px solid rgba(198,169,107,0.2);background:transparent;backdrop-filter:blur(10px);transition:all 0.3s;border-radius:4px;cursor:default" class="reveal"><span style="font-size:0.95rem;color:var(--white);display:block;margin-bottom:8px;font-weight:400"><strong>Surface</strong></span><span style="font-size:0.75rem;color:rgba(255,255,255,0.6);line-height:1.5">Devices & tables</span></div>
+        <div style="padding:24px 16px;border:1px solid rgba(198,169,107,0.2);background:transparent;backdrop-filter:blur(10px);transition:all 0.3s;border-radius:4px;cursor:default" class="reveal"><span style="font-size:0.95rem;color:var(--white);display:block;margin-bottom:8px;font-weight:400"><strong>Professional</strong></span><span style="font-size:0.75rem;color:rgba(255,255,255,0.6);line-height:1.5">Corporate packs</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SOCIAL PROOF -->
+<section id="social">
+  <div class="container">
+    <div class="reveal" style="text-align:center">
+      <span class="sec-label">Traction</span>
+      <h2 class="sec-h2">Already adopted by<br><em>intentional operators.</em></h2>
+    </div>
+    <div class="proof-grid reveal">
+      <div class="proof-cell"><span class="proof-num">3K+</span><span class="proof-label">Daily Operators</span></div>
+      <div class="proof-cell"><span class="proof-num">45+</span><span class="proof-label">Corporate & Events</span></div>
+      <div class="proof-cell"><span class="proof-num">5</span><span class="proof-label">Product Formats</span></div>
+    </div>
+    <div style="margin-top:64px;padding:40px 32px;border:1px solid var(--glass-border);background:transparent;backdrop-filter:blur(10px);border-radius:8px">
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:32px;text-align:center">
+        <div class="reveal reveal-delay-1">
+          <div style="font-size:0.7rem;letter-spacing:0.3em;color:var(--gold);text-transform:uppercase;margin-bottom:16px;font-weight:600">Used Daily</div>
+          <p style="font-size:0.95rem;line-height:1.8;color:rgba(255,255,255,0.65)">Before eating on the go, after commuting, between environments — built into daily behavior.</p>
+        </div>
+        <div class="reveal reveal-delay-2">
+          <div style="font-size:0.7rem;letter-spacing:0.3em;color:var(--gold);text-transform:uppercase;margin-bottom:16px;font-weight:600">Portable Confidence</div>
+          <p style="font-size:0.95rem;line-height:1.8;color:rgba(255,255,255,0.65)">Carries in bags, pockets, desks. No friction. Control is always accessible—that's the system.</p>
+        </div>
+        <div class="reveal reveal-delay-3">
+          <div style="font-size:0.7rem;letter-spacing:0.3em;color:var(--gold);text-transform:uppercase;margin-bottom:16px;font-weight:600">Intentional Living</div>
+          <p style="font-size:0.95rem;line-height:1.8;color:rgba(255,255,255,0.65)">For people who move through the world with a standard—not a reaction. Exposure is expected; control is the answer.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOMO -->
+<section id="fomo" style="text-align:center">
+  <div class="container">
+    <div class="fomo-inner reveal">
+      <div class="fomo-badge">Category Creator</div>
+      <h2 class="sec-h2">Personal Hygiene<br>Control System.<br><em>A new standard.</em></h2>
+      <p class="sec-body" style="margin:24px auto 48px;max-width:600px">VELORA doesn't fit into an existing category because it created one. Not cleaning supplies. Not hand sanitizer. A system that transforms exposure awareness into daily confidence.<br><br>Limited availability as we expand distribution. Early access only.</p>
+      <a href="https://beacons.ai/theangeloking" target="_blank" class="btn-primary">Get Early Access</a>
+    </div>
+  </div>
+</section>
+
+<!-- PRICING -->
+<section id="pricing">
+  <div class="container">
+    <div class="reveal" style="text-align:center">
+      <span class="sec-label">Pricing</span>
+      <h2 class="sec-h2">Control for every<br><em>budget & behavior.</em></h2>
+      <p class="sec-body">Start with a trial. Build the habit. Never run out.</p>
+    </div>
+    <div class="pricing-grid">
+      <div class="price-card reveal reveal-delay-1">
+        <span class="price-name">Starter</span>
+        <div class="price-amount">₦2,500</div>
+        <span class="price-range">First exposure</span>
+        <p class="price-desc">Your introduction. A single pack to test the standard. Fits your pocket.</p>
+        <a href="https://beacons.ai/theangeloking" target="_blank" class="price-btn price-btn-outline">Try It</a>
+      </div>
+      <div class="price-card featured reveal reveal-delay-2">
+        <span class="price-name">Control System</span>
+        <div class="price-amount">₦7,000</div>
+        <span class="price-range">The complete set</span>
+        <p class="price-desc">Pocket + Desk Unit + Surface wipes. Everything the Intentional Operator needs daily.</p>
+        <a href="https://beacons.ai/theangeloking" target="_blank" class="price-btn price-btn-gold">Get Control</a>
+      </div>
+      <div class="price-card reveal reveal-delay-3">
+        <span class="price-name">Consistency</span>
+        <div class="price-amount">₦18,000</div>
+        <span class="price-range">Monthly auto-delivery</span>
+        <p class="price-desc">Never run out. Delivered every month so clean is always within reach. Habit becomes automatic.</p>
+        <a href="https://beacons.ai/theangeloking" target="_blank" class="price-btn price-btn-outline">Subscribe</a>
+      </div>
+    </div>
+    <div class="wa-order reveal">
+      <a href="https://wa.me/?text=Hi%2C%20I'd%20like%20to%20order%20VELORA%20wipes" target="_blank" class="wa-btn">
+        <svg style="width:18px;height:18px;fill:#25D366" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+        Order on WhatsApp
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- FOUNDERS -->
+<section id="founders">
+  <div class="container">
+    <div class="reveal">
+      <span class="sec-label">The Team</span>
+      <h2 class="sec-h2">Built with<br><em>intention.</em></h2>
+    </div>
+    <div class="founders-grid">
+      <div class="founder-card reveal reveal-delay-1">
+        <div class="founder-initial">A</div>
+        <div class="founder-name">Angelo</div>
+        <span class="founder-role">Founder & CEO</span>
+        <p class="founder-bio">Focused on making hygiene simple, consistent, and reliable. Building the infrastructure that makes clean accessible.</p>
+      </div>
+      <div class="founder-card reveal reveal-delay-2">
+        <div class="founder-initial">H</div>
+        <div class="founder-name">HNG</div>
+        <span class="founder-role">Co-Founder & CMO</span>
+        <p class="founder-bio">Focused on how the brand is experienced and adopted. Shaping the culture around cleanliness and daily readiness.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FINAL -->
+<section id="final">
+  <div class="container">
+    <div class="reveal">
+      <h2 class="final-h2">The standard<br>isn't reaction.<br><em>It's control.</em></h2>
+      <p style="font-size:1rem;line-height:1.8;color:rgba(255,255,255,0.6);max-width:600px;margin:24px auto 48px;text-align:center">You move through more than you see. VELORA keeps you clean without stopping your flow. It's not something you think about. It's something you stay on top of.</p>
+      <a href="https://beacons.ai/theangeloking" target="_blank" class="btn-primary" style="font-size:0.85rem;padding:18px 48px">Get Early Access</a>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">VELORA</div>
+  <div class="footer-copy">© 2025 VELORA. All rights reserved.</div>
+</footer>
+
+<script>
+// PARTICLE SYSTEM
+const canvas = document.getElementById('particles');
+const ctx = canvas.getContext('2d');
+let particles = [];
+
+function resize() {
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+}
+resize();
+window.addEventListener('resize', resize);
+
+class Particle {
+  constructor() { this.reset(); }
+  reset() {
+    this.x = Math.random() * canvas.width;
+    this.y = Math.random() * canvas.height;
+    this.size = Math.random() * 1.5 + 0.5;
+    this.speedX = (Math.random() - 0.5) * 0.3;
+    this.speedY = (Math.random() - 0.5) * 0.3;
+    this.life = 0;
+    this.maxLife = Math.random() * 200 + 100;
+    this.gold = Math.random() > 0.7;
+  }
+  update() {
+    this.x += this.speedX;
+    this.y += this.speedY;
+    this.life++;
+    if (this.life > this.maxLife) this.reset();
+  }
+  draw() {
+    const alpha = Math.sin((this.life / this.maxLife) * Math.PI) * 0.4;
+    ctx.beginPath();
+    ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+    ctx.fillStyle = this.gold
+      ? `rgba(198,169,107,${alpha})`
+      : `rgba(255,255,255,${alpha * 0.5})`;
+    ctx.fill();
+  }
+}
+
+for (let i = 0; i < 120; i++) particles.push(new Particle());
+
+function animateParticles() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  particles.forEach(p => { p.update(); p.draw(); });
+  requestAnimationFrame(animateParticles);
+}
+animateParticles();
+
+// SCROLL REVEAL
+const reveals = document.querySelectorAll('.reveal');
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (e.isIntersecting) { e.target.classList.add('visible'); observer.unobserve(e.target); }
+  });
+}, { threshold: 0.12 });
+reveals.forEach(el => observer.observe(el));
+
+// PARALLAX HERO
+window.addEventListener('scroll', () => {
+  const hero = document.querySelector('#hero .hero-inner');
+  if (hero) hero.style.transform = `translateY(${window.scrollY * 0.15}px)`;
+});
+</script>
+</body>
+</html>
