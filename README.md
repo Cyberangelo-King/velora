@@ -1,5 +1,5 @@
 # VELORA — Personal Hygiene Control System
-## HNG Internship | Sales & Marketing Stage 2 | Task: "The Boring Product"
+## HNG Internship | Sales & Markkting Stage 2 | Task: "The Boring Product"
 
 ---
 
@@ -420,5 +420,6 @@ This project is part of the HNG Internship curriculum. Feel free to use as a ref
 
 **Made with intention. Designed for control. Built for the Intentional Operator.**
 "# velora" 
-#   v e l o r a  
+#   v e l o r a 
+ 
  
