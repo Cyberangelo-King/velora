@@ -1,24 +1,24 @@
-# Project Title
+# Velora
 
-A brief description of your project.
+A marketing and engagement web experiment exploring how a digital product can communicate value clearly without becoming another generic landing page.
 
-## Description
+## Repositioning
 
-This project is designed to help with Marketing efforts and improve user engagement.
+The original repository metadata was intentionally minimal. Velora now gets a proper identity: a **conversion-focused experience laboratory** for testing messaging, information hierarchy, interaction and visual systems.
 
-## Setup Instructions
+## Build principles
 
-Please update this section with the actual deployment link:
-[Deployment Link](<insert-your-url-here>)
+- Start from the audience problem
+- Make the value proposition specific
+- Use evidence before decorative claims
+- Keep interaction purposeful
+- Optimise for mobile and constrained connections
+- Measure comprehension and action, not animation count
 
-## Conclusion
+## Project process
 
-This project was developed to enhance marketing strategies.
+Research → proposition → content model → wireframe → visual direction → prototype → usability review → implementation → performance pass.
 
-Additional information can be added here.
+## Status
 
----- 
-
-## Additional Sections
-
-Feel free to add more content relevant to your project.
+Revival candidate. The next step is a real use case and a narrow MVP rather than more generic marketing features.
